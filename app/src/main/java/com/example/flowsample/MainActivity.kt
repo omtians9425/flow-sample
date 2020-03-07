@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -32,11 +33,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun startCollect(): Job {
         return lifecycleScope.launch {
-            runCatching {
-                makeUnlimitedFlow().collect { elem ->
-                    text_view.text = elem.toString()
-                }
-            }.onFailure { Toast.makeText(this@MainActivity, "failure", Toast.LENGTH_LONG).show() }
+            makeUnlimitedFlow()
+                    .catch {
+                        Toast.makeText(this@MainActivity, "failure", Toast.LENGTH_LONG).show()
+                    }
+                    .collect { elem ->
+                        text_view.text = elem.toString()
+                    }
         }
     }
 
