@@ -9,10 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.lang.RuntimeException
 
@@ -38,7 +35,7 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this@MainActivity, "failure", Toast.LENGTH_LONG).show()
                     }
                     .collect { elem ->
-                        text_view.text = elem.toString()
+                        text_view.text = elem
                     }
         }
     }
@@ -52,5 +49,6 @@ class MainActivity : AppCompatActivity() {
             count++
             delay(500)
         }
-    }.flowOn(Dispatchers.IO)
+    }.map { it.toString() }
+            .flowOn(Dispatchers.IO)
 }
