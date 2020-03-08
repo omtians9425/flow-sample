@@ -35,16 +35,17 @@ class MainActivity : AppCompatActivity() {
     private fun startCollectFlow(): Job {
         return lifecycleScope.launch {
             unlimitedFlow
+                .onEach { elem ->
+                    flowConsumerText.text = "flow consume: $elem"
+                }
                 .catch {
                     Toast.makeText(this@MainActivity, "failure", Toast.LENGTH_LONG).show()
                 }
-                .collect { elem ->
-                    flowConsumerText.text = "flow consume: $elem"
-                }
+                .collect()
         }
     }
 
-    private val unlimitedFlow  = flow {
+    private val unlimitedFlow = flow {
         var count = 0
         while (true) {
             emit(count)
@@ -61,7 +62,6 @@ class MainActivity : AppCompatActivity() {
         .flowOn(Dispatchers.Main)
 
     /*---------flow-----------*/
-
 
 
     /*---------channel-----------*/
